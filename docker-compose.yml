@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: hng-nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - HNG-nginx-logs:/var/log/nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - nextcloud
+    networks:
+      - hng-net
+
+  nextcloud:
+    image: kefaslungu/hng-nextcloud
+    container_name: hng-nextcloud
+    environment:
+      - TRUSTED_PROXIES=nginx
+    volumes:
+      - HNG-nginx-logs:/var/log/nginx:ro
+    networks:
+      - hng-net
+
+  detector:
+    build: ./detector
+    container_name: hng-detector
+    volumes:
+      - HNG-nginx-logs:/var/log/nginx:ro
+    environment:
+      - CONFIG_FILE=/app/config.yaml
+    networks:
+      - hng-net
+    restart: unless-stopped
+
+volumes:
+  HNG-nginx-logs:
+
+networks:
+  hng-net:
+    driver: bridge
