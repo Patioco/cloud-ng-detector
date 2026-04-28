@@ -1,0 +1,58 @@
+                   ┌──────────────────────────────┐
+                   │        Internet Users         │
+                   └───────────────┬──────────────┘
+                                   │ HTTP Traffic
+                                   ▼
+                     ┌──────────────────────────┐
+                     │         NGINX             │
+                     │   Reverse Proxy Layer     │
+                     │ - JSON Access Logs        │
+                     │ - Real IP Forwarding      │
+                     └──────────────┬────────────┘
+                                    │ Proxied Requests
+                                    ▼
+                     ┌──────────────────────────┐
+                     │       Nextcloud          │
+                     │  (HNG Provided Image)    │
+                     └──────────────────────────┘
+
+                     ┌──────────────────────────┐
+                     │  Named Volume:           │
+                     │  HNG-nginx-logs          │
+                     │  /var/log/nginx          │
+                     └──────────────┬───────────┘
+                                    │
+                                    ▼
+                     ┌──────────────────────────┐
+                     │        Detector           │
+                     │  (Python Daemon)          │
+                     │                          │
+                     │  Modules:                │
+                     │  - monitor.py            │
+                     │  - baseline.py           │
+                     │  - detector.py           │
+                     │  - blocker.py            │
+                     │  - unbanner.py           │
+                     │  - notifier.py           │
+                     │  - dashboard.py          │
+                     └──────────────┬───────────┘
+                                    │
+                                    │ iptables DROP rules
+                                    ▼
+                     ┌──────────────────────────┐
+                     │        iptables          │
+                     │  (Ban / Unban Engine)    │
+                     └──────────────────────────┘
+
+                     ┌──────────────────────────┐
+                     │  Dashboard (FastAPI)     │
+                     │  - Metrics               │
+                     │  - Top IPs               │
+                     │  - Baseline Stats        │
+                     │  - Banned IPs            │
+                     └──────────────┬───────────┘
+                                    │
+                                    ▼
+                     ┌──────────────────────────┐
+                     │   Browser (Your Domain)  │
+                     └──────────────────────────┘
