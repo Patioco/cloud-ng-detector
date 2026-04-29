@@ -19,7 +19,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # ---- Copy detector source code ----
-COPY . .
+COPY ./detector .
 
 # ---- Expose dashboard port ----
 EXPOSE 8080
