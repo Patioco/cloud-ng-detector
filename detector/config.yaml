@@ -1,35 +1,19 @@
-# Path to the JSON access log written by Nginx
-log_path: /var/log/nginx/hng-access.log
+detector:
+  window_seconds: 10
+  max_entries: 5000
+  zscore_threshold: 3
+  multiplier_threshold: 5
+  error_multiplier: 3
 
-windows:
-  # Sliding windows (deque-based)
-  per_ip_seconds: 60        # per-IP request window
-  global_seconds: 60        # global request window
+baseline:
+  baseline_minutes: 30
+  baseline_recalc_seconds: 60
 
-  # Baseline learning window
-  baseline_minutes: 30      # rolling 30-minute baseline
-  baseline_recalc_seconds: 60  # recompute mean/stddev every 60s
-
-thresholds:
-  # Primary anomaly detection thresholds
-  zscore: 3.0               # z-score threshold
-  multiplier: 5.0           # 5x baseline mean
-
-  # Error surge tightening
-  error_multiplier: 3.0     # 3x baseline error rate triggers tighter thresholds
-
-ban:
-  # Progressive unban schedule
-  backoff_minutes:
-    - 10                    # first unban after 10 minutes
-    - 30                    # second unban after 30 minutes
-    - 120                   # third unban after 2 hours
-  iptables_chain: "INPUT"   # chain where DROP rules are inserted
+logs:
+  access_log: "/var/log/nginx/access.log"
 
 alerts:
-  method: file
-  path: /var/log/hng-detector-alerts.log
-
-dashboard:
-  host: "0.0.0.0"
-  port: 8080
+  enabled: true
+  slack:
+    enabled: true
+    webhook_url: "https://hooks.slack.com/services/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"

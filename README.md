@@ -7,7 +7,7 @@ A real-time HTTP traffic anomaly detection and DDoS mitigation daemon built alon
 | **Server IP**      | `<YOUR_SERVER_IP>`                                     |
 | **Dashboard URL**  | `http://<YOUR_SERVER_IP>:9000`                         |
 | **GitHub Repo**    | `https://github.com/<your-username>/hng-stage3-devsecops` |
-| **Blog Post**      | `https://<your-published-blog-url>`                    |
+| **Blog Post**      | `https://dev.to/patrick_onwujekwe_5355395/building-a-real-time-anomaly-detection-engine-for-web-traffic-2im8`                    |
 
 ---
 

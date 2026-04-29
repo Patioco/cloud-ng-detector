@@ -1,22 +1,28 @@
 import requests
-import datetime as dt
+import logging
+from .config import load_config
 
-class Notifier:
-    def __init__(self, method, path=None):
-        self.method = method
-        self.path = path
+log = logging.getLogger("notifier")
 
-    def _write(self, text):
-        if self.method == "file" and self.path:
-            with open(self.path, "a") as f:
-                f.write(text + "\n")
+config = load_config()
+slack_cfg = config.get("alerts", {}).get("slack", {})
 
-    def ip_ban(self, ip, rate, baseline, z, duration):
-        msg = f"BAN {ip} | rate={rate:.2f} | baseline={baseline:.2f} | z={z:.2f} | duration={duration}"
-        self._write(msg)
 
-    def ip_unban(self, ip):
-        self._write(f"UNBAN {ip}")
+def send_slack_alert(message: str):
+    """Send a Slack alert if enabled and webhook is configured."""
+    if not slack_cfg.get("enabled", False):
+        return
 
-    def global_alert(self, rate, baseline, z):
-        self._write(f"GLOBAL ALERT | rate={rate:.2f} | baseline={baseline:.2f} | z={z:.2f}")
+    webhook = slack_cfg.get("webhook_url")
+    if not webhook:
+        log.warning("Slack alert enabled but no webhook URL configured.")
+        return
+
+    payload = {"text": message}
+
+    try:
+        resp = requests.post(webhook, json=payload, timeout=5)
+        if resp.status_code >= 300:
+            log.error(f"Slack webhook returned {resp.status_code}: {resp.text}")
+    except Exception as e:
+        log.error(f"Failed to send Slack alert: {e}")

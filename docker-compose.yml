@@ -1,4 +1,6 @@
 version: "3.9"
+environment:
+  SLACK_WEBHOOK_URL: "https://hooks.slack.com/services/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"
 
 services:
   nginx:
